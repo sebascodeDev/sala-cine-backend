@@ -78,49 +78,42 @@ Editar `appsettings.json`:
 }
 ```
 
-4. **Crear la base de datos**
+4. **Otorgar permisos en PostgreSQL** (IMPORTANTE)
+
+Si reciben error `permission denied for schema public`, ejecutar primero:
+
+```bash
+# Conectar como superusuario
+psql -U postgres -d SalaCineDb
+
+# Ejecutar en la consola psql:
+GRANT ALL PRIVILEGES ON DATABASE "SalaCineDb" TO postgres;
+GRANT USAGE ON SCHEMA public TO postgres;
+GRANT CREATE ON SCHEMA public TO postgres;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO postgres;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO postgres;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO postgres;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO postgres;
+```
+
+O utilizar el script proporcionado:
+```bash
+psql -U postgres -d SalaCineDb -f Data/GrantPermissions.sql
+```
+
+5. **Crear la base de datos y ejecutar migraciones**
 
 ```bash
 dotnet ef database update
 ```
 
-5. **Ejecutar el Stored Procedure**
+6. **Ejecutar datos iniciales (opcional)**
 
-Conectar a PostgreSQL y ejecutar:
-
-```sql
-CREATE OR REPLACE FUNCTION GetEstadoSala(p_nombreSala VARCHAR)
-RETURNS VARCHAR AS $$
-DECLARE
-    v_salaId INT;
-    v_cantidadPeliculas INT;
-    v_resultado VARCHAR;
-BEGIN
-    SELECT id INTO v_salaId FROM "Salas"
-    WHERE "Nombre" = p_nombreSala AND "Activo" = true;
-
-    IF v_salaId IS NULL THEN
-        RETURN 'Sala no encontrada';
-    END IF;
-
-    SELECT COUNT(*) INTO v_cantidadPeliculas
-    FROM "PeliculasSalas"
-    WHERE "SalaId" = v_salaId AND "Activo" = true;
-
-    IF v_cantidadPeliculas < 3 THEN
-        v_resultado := 'Sala disponible';
-    ELSIF v_cantidadPeliculas >= 3 AND v_cantidadPeliculas <= 5 THEN
-        v_resultado := 'Sala con ' || v_cantidadPeliculas || ' películas asignadas';
-    ELSE
-        v_resultado := 'Sala no disponible';
-    END IF;
-
-    RETURN v_resultado;
-END;
-$$ LANGUAGE plpgsql;
+```bash
+psql -U postgres -d SalaCineDb -f Data/InitializeDatabase.sql
 ```
 
-6. **Ejecutar la aplicación**
+7. **Ejecutar la aplicación**
 
 ```bash
 dotnet run
