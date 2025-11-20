@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Lg4tRCM8p6k=",
+  "success": true,
+  "projectFilePath": "/home/sebastian/Escritorio/Proyectos/sala-cine-backend/SalaCine.Api/SalaCine.Api.csproj",
+  "expectedPackageFiles": [
+    "/home/sebastian/.nuget/packages/microsoft.aspnetcore.openapi/9.0.11/microsoft.aspnetcore.openapi.9.0.11.nupkg.sha512",
+    "/home/sebastian/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
