@@ -54,12 +54,14 @@ SalaCine.Api/
 ### Pasos de Instalación
 
 1. **Clonar el repositorio**
+
 ```bash
 git clone https://github.com/sebascodeDev/sala-cine-backend.git
 cd SalaCine.Api
 ```
 
 2. **Restaurar dependencias**
+
 ```bash
 dotnet restore
 ```
@@ -67,6 +69,7 @@ dotnet restore
 3. **Configurar la cadena de conexión**
 
 Editar `appsettings.json`:
+
 ```json
 {
   "ConnectionStrings": {
@@ -76,6 +79,7 @@ Editar `appsettings.json`:
 ```
 
 4. **Crear la base de datos**
+
 ```bash
 dotnet ef database update
 ```
@@ -83,6 +87,7 @@ dotnet ef database update
 5. **Ejecutar el Stored Procedure**
 
 Conectar a PostgreSQL y ejecutar:
+
 ```sql
 CREATE OR REPLACE FUNCTION GetEstadoSala(p_nombreSala VARCHAR)
 RETURNS VARCHAR AS $$
@@ -91,15 +96,15 @@ DECLARE
     v_cantidadPeliculas INT;
     v_resultado VARCHAR;
 BEGIN
-    SELECT id INTO v_salaId FROM "Salas" 
+    SELECT id INTO v_salaId FROM "Salas"
     WHERE "Nombre" = p_nombreSala AND "Activo" = true;
 
     IF v_salaId IS NULL THEN
         RETURN 'Sala no encontrada';
     END IF;
 
-    SELECT COUNT(*) INTO v_cantidadPeliculas 
-    FROM "PeliculasSalas" 
+    SELECT COUNT(*) INTO v_cantidadPeliculas
+    FROM "PeliculasSalas"
     WHERE "SalaId" = v_salaId AND "Activo" = true;
 
     IF v_cantidadPeliculas < 3 THEN
@@ -116,6 +121,7 @@ $$ LANGUAGE plpgsql;
 ```
 
 6. **Ejecutar la aplicación**
+
 ```bash
 dotnet run
 ```
@@ -127,10 +133,13 @@ La API estará disponible en: `http://localhost:5233`
 ### 1. CRUD de Películas
 
 #### Obtener todas las películas
+
 ```
 GET /api/peliculas
 ```
+
 **Respuesta exitosa (200):**
+
 ```json
 [
   {
@@ -145,13 +154,17 @@ GET /api/peliculas
 ```
 
 #### Obtener película por ID
+
 ```
 GET /api/peliculas/{id}
 ```
+
 **Parámetros:**
+
 - `id` (int, requerido): ID de la película
 
 #### Crear película
+
 ```
 POST /api/peliculas
 Content-Type: application/json
@@ -163,9 +176,11 @@ Content-Type: application/json
   "fechaEstreno": "2022-12-16T00:00:00"
 }
 ```
+
 **Respuesta exitosa (201):** Devuelve el objeto creado con ID
 
 #### Actualizar película
+
 ```
 PUT /api/peliculas
 Content-Type: application/json
@@ -180,21 +195,27 @@ Content-Type: application/json
 ```
 
 #### Eliminar película (Eliminación lógica)
+
 ```
 DELETE /api/peliculas/{id}
 ```
+
 **Nota:** La película se marca como inactiva, no se elimina físicamente
 
 ### 2. Procesos de Negocio
 
 #### Buscar película por nombre
+
 ```
 GET /api/peliculas/buscar/nombre?nombre=Avatar
 ```
+
 **Parámetros:**
+
 - `nombre` (string, requerido): Nombre o parte del nombre de la película
 
 **Respuesta:**
+
 ```json
 [
   {
@@ -209,30 +230,39 @@ GET /api/peliculas/buscar/nombre?nombre=Avatar
 ```
 
 #### Obtener películas por fecha de publicación
+
 ```
 GET /api/peliculas/buscar/fecha-publicacion?fecha=2022-12-16
 ```
+
 **Parámetros:**
+
 - `fecha` (date, requerido): Fecha de publicación (formato: YYYY-MM-DD)
 
 **Validaciones:**
+
 - La fecha debe ser válida
 - Se buscan películas exactas a esa fecha
 
 #### Obtener estado de sala
+
 ```
 GET /api/peliculas/sala/estado?nombreSala=Sala 1
 ```
+
 **Parámetros:**
+
 - `nombreSala` (string, requerido): Nombre de la sala de cine
 
 **Respuestas posibles:**
+
 - `"Sala disponible"` - Si tiene menos de 3 películas
 - `"Sala con [n] películas asignadas"` - Si tiene entre 3 y 5 películas
 - `"Sala no disponible"` - Si tiene más de 5 películas
 - `"Sala no encontrada"` - Si la sala no existe
 
 **Respuesta del endpoint:**
+
 ```json
 {
   "mensaje": "Sala disponible"
@@ -242,6 +272,7 @@ GET /api/peliculas/sala/estado?nombreSala=Sala 1
 ## 🗄️ Modelo de Base de Datos
 
 ### Tabla: Peliculas
+
 ```sql
 CREATE TABLE "Peliculas" (
     "Id" SERIAL PRIMARY KEY,
@@ -254,6 +285,7 @@ CREATE TABLE "Peliculas" (
 ```
 
 ### Tabla: Salas
+
 ```sql
 CREATE TABLE "Salas" (
     "Id" SERIAL PRIMARY KEY,
@@ -264,6 +296,7 @@ CREATE TABLE "Salas" (
 ```
 
 ### Tabla: PeliculasSalas (Relación Many-to-Many)
+
 ```sql
 CREATE TABLE "PeliculasSalas" (
     "Id" SERIAL PRIMARY KEY,
@@ -285,6 +318,7 @@ CREATE TABLE "PeliculasSalas" (
 ## 📖 Swagger / OpenAPI
 
 La documentación interactiva de la API está disponible en:
+
 ```
 http://localhost:5233/swagger
 ```
@@ -292,12 +326,14 @@ http://localhost:5233/swagger
 ## 📮 Colección Postman
 
 La colección `SalaCine-Postman-Collection.json` incluye:
+
 - ✅ Todos los endpoints CRUD
 - ✅ Búsquedas por nombre y fecha
 - ✅ Validación de estado de sala
 - ✅ Ejemplos de solicitud/respuesta
 
 **Para importar:**
+
 1. Abrir Postman
 2. Click en "Import"
 3. Seleccionar `SalaCine-Postman-Collection.json`
@@ -305,6 +341,7 @@ La colección `SalaCine-Postman-Collection.json` incluye:
 ## 🧪 Ejemplos de Uso
 
 ### Crear una película
+
 ```bash
 curl -X POST http://localhost:5233/api/peliculas \
   -H "Content-Type: application/json" \
@@ -317,16 +354,19 @@ curl -X POST http://localhost:5233/api/peliculas \
 ```
 
 ### Buscar película por nombre
+
 ```bash
 curl http://localhost:5233/api/peliculas/buscar/nombre?nombre=Avatar
 ```
 
 ### Obtener películas por fecha
+
 ```bash
 curl http://localhost:5233/api/peliculas/buscar/fecha-publicacion?fecha=2022-12-16
 ```
 
 ### Verificar disponibilidad de sala
+
 ```bash
 curl http://localhost:5233/api/peliculas/sala/estado?nombreSala=Sala%201
 ```
@@ -334,11 +374,13 @@ curl http://localhost:5233/api/peliculas/sala/estado?nombreSala=Sala%201
 ## 🚀 Deployment
 
 ### Publicar para producción
+
 ```bash
 dotnet publish -c Release -o ./publish
 ```
 
 ### Variables de entorno necesarias
+
 ```bash
 ASPNETCORE_ENVIRONMENT=Production
 ConnectionStrings__DefaultConnection=<cadena_conexion>
@@ -366,4 +408,4 @@ Proyecto académico - Gestión de Películas y Salas de Cine
 
 **Última actualización:** 20 de noviembre de 2025
 **Versión:** 1.0.0
-**Autor:** Sebastian Rodríguez
+**Autor:** Sebastian Valarezo
