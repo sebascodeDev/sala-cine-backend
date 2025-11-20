@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SalaCine.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6be90098290b73e648e4937ed5a41031eaddd4b1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f1d47a8ec1c18b9b4cf1e85dc3855fc89c53b84")]
 [assembly: System.Reflection.AssemblyProductAttribute("SalaCine.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SalaCine.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
