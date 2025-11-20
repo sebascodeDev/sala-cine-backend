@@ -8,7 +8,6 @@ namespace SalaCine.Api.Data
         {
         }
 
-        // Define DbSets for your entities here
-        // public DbSet<YourEntity> YourEntities { get; set; }
+        public DbSet<Model.Entities.Pelicula> Peliculas { get; set; }
     }
 }
